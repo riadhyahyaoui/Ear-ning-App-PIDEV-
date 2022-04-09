@@ -35,7 +35,7 @@ const userSchema = new Schema(
     
     role:{
         type: String,
-        enum: ['admin','user'],
+        enum: ['superadmin','admin','user'],
         required: true
     },
     method: {
@@ -61,9 +61,17 @@ const userSchema = new Schema(
     Isactive: {
       type: Boolean
     },
+    banned: {
+      type: Boolean,default:false
+    },
     Passwordtoken:{
       type:String
-  },
+    },
+    followers: [
+      { type: Schema.Types.ObjectId, ref: "user" }
+    ],
+    following: [
+      { type: Schema.Types.ObjectId, ref: "user" }],
 
   PasswordResetDate: {
       type:Date

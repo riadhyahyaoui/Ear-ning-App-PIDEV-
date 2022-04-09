@@ -28,8 +28,7 @@ passport.use(new JwtStrategy({
         const user = await User.findById(payload.sub);
 
         // If user doesn't exists, handle it
-        if (!user) 
-        {
+        if (!user) {
             return done(null, false);
         }
         // Otherwise, return the user

@@ -18,23 +18,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 //!Routers
-app.use('/api', require('./routes/authRouter'));
-var configDB=require('./database/mongodb.json');
+app.use('/api/auth', require('./routes/authRouter'));
+app.use('/api/user', require('./routes/userRouter'));
+app.use('/api/admin', require('./routes/authAdminRouter'));
+
+var configDB = require('./database/mongodb.json');
 
 //!Database connection to mongoose
 
 //mongo config 
 const connect = mongoose.connect(
 
-  configDB.mongo.uri ,
-{ 
-    useNewUrlParser: true ,
+  configDB.mongo.uri,
+  {
+    useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex:true,
-    useFindAndModify: false ,
-    findOneAndUpdate : true
-},
-()=> console.log('Connected to DB !!') );
+    useCreateIndex: true,
+    useFindAndModify: false,
+    findOneAndUpdate: true
+  },
+  () => console.log('Connected to DB !!'));
 
 //!listening on port
 
