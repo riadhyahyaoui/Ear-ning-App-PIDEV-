@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { isEmail } = require('validator');
+var bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
 
@@ -73,5 +74,14 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+userSchema.methods.isValidPassword = async function (newPass) {
+  try {
+
+      return await bcrypt.compare(newPass, this.password)
+
+  } catch (error) {
+      throw new Error(error);
+  }
+}
 
 module.exports = mongoose.model("user", userSchema);

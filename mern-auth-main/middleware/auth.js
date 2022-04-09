@@ -30,42 +30,14 @@ const auth = async (req,res,next) => {
 
 
 
-// check current user
-const checkUser = (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (token) {
-    jwt.verify(token, 'secret', async (err, decodedToken) => {
-      if (err) {
-        res.status(200).json({
-          message: "you must log in *"
-        });
-        next();
-      } else {
-        let user = await User.findById(decodedToken.id);
-        req.user = user;
-        next();
-      }
-    });
-  } else {
-    res.locals.user = null;
-    res.status(200).json({
-      message: "you must log in *"
-    });
-  }
-};
-const isLoggedIn = (req, res, next) => {
-  console.log(req);
-  if (req.user) {
-    next();
-  } else {
-      res.status(401).send('Not Logged In');
-    }
-  }
+//
 
 const notReqAuthentication = (req, res, next) => {
   // VERIFYING USER
-  const token = req.cookies.refreshtoken;
-  // IF THERE IS A TOKEN NAME WITH JWT THEN IT IT WON'T LET USER GO SOME ROUTE
+ // const token = req.cookies.refreshtoken;
+  const token = req.cookies.access_token;
+  
+ // IF THERE IS A TOKEN NAME WITH JWT THEN IT IT WON'T LET USER GO SOME ROUTE
   if (token) {
     console.log(token);
     console.log("There is a token ");
@@ -80,8 +52,7 @@ const notReqAuthentication = (req, res, next) => {
     next();
   }
  
-    module.exports = isLoggedIn
 }
 
-module.exports = { auth, isLoggedIn,checkUser, notReqAuthentication };
+module.exports = { auth, notReqAuthentication };
 

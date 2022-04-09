@@ -9,6 +9,7 @@ const sendgridTransport = require('nodemailer-sendgrid-transport')
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client("132856096478-jo705a4g0tu8ungd07r1fhocu1d9ccp3.apps.googleusercontent.com");
 
+const jwt_decode =require( 'jwt-decode');
 const transporter = nodemailer.createTransport(sendgridTransport({
   auth: {
     api_key: "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"
@@ -22,13 +23,6 @@ const transporter2 = nodemailer.createTransport({
         pass: 'Music@Earning2022'
     }
 });
-signToken = user => {
-    return JWT.sign({
-        iss: 'Earning',
-        sub: user.id,
-
-    }, 'EarningToken');
-}
 
 const authCtrl = {
   register: async (req, res) => {
@@ -116,7 +110,7 @@ const authCtrl = {
     }
   },
 
-  
+ 
 
   login: async (req, res) => {
     try {
@@ -137,11 +131,13 @@ const authCtrl = {
         return res.status(400).json({ msg: "Email or Password is incorrect 2." });
       }
 
-      const access_token = createAccessToken({ id: user._id });
+      //const access_token = createAccessToken({ id: user._id });
+      access_token= signToken(user);
+      
       const refresh_token = createRefreshToken({ id: user._id });
 
      // res.cookie('refreshtoken', access_token, { httpOnly: true, maxAge:  30 * 24 * 60 * 60 * 1000 });
-      res.cookie("refreshtoken", refresh_token, {
+      res.cookie("access_token", access_token, {
         httpOnly: true,
        // path: "/api/refresh_token",
         sameSite: "lax",
@@ -164,7 +160,7 @@ const authCtrl = {
   
   logout: async (req, res) => {
     try {
-      res.cookie('refreshtoken', '', { maxAge: 1 });
+      res.cookie('access_token', '', { maxAge: 1 });
       return res.json({ msg: "Logged out Successfully." });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
@@ -312,33 +308,31 @@ resetPassword: async (req, res, next) => {
 
   }
 
-},checkAuth2: async (req, res, next) => {
-  console.log({ User: req });
 },
-
-checkAuth: async (req, res, next) => {
+check:async (req,res,next)=>{
   try {
-    const token = req.cookies.jwt;
-    if (token) {
-      console.log(req.cookies)
-      jwt.verify(token, 'secret', async (err, decodedToken) => {
-        if (err) {
-          res.status(200).json({
-            message: "you must log in *"
-          });
-          next();
-        } else {
-          let user = await User.findById(decodedToken.id);
-          req.user = user;
-          next();
-        }
-      });
-    }
-  } catch (error) {
-  }
+    const token = req.cookies.access_token; 
+    if(token){
+        decodedToken = jwt_decode(token);
+
+      if (decodedToken) {
+      return  res.status(200).json({
+          msg: "User Checked!",
+          "decoded token ":decodedToken,
+           
+        });
+      }
+      if (!decodedToken) {
+        return res.status(400).json({ msg: "You are not authorized 1  (decoded)" });
+      }
+
+      return res.status(400).json({ msg: "You are not authorized (token )" });
+    }      
+} catch (err) {
+    return res.status(500).json({msg: err.message});
+}
 }
 };
-
 const createAccessToken = (payload) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "1d",
@@ -351,6 +345,10 @@ const createRefreshToken = (payload) => {
     expiresIn: "30d",
   });
 };
+const signToken = (user) => {
+  return jwt.sign({iss:'Earning',sub: user.id,user:user}, 'EarningToken',{expiresIn: "1d"});
+}
+
 
 
 module.exports = authCtrl;
