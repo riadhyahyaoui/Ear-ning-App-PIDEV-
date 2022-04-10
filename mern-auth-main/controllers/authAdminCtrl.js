@@ -99,6 +99,19 @@ const authAdminCtrl = {
         UsersList = await Users.find({ "role": "user" });
         res.status(200).json({ success: true, UsersList });
     },
+    getAll: async (req, res) => {
+        await User.find()
+            .then(data => {
+                res.send({ users: data });
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while retrieving users."
+                });
+            });
+    },
+
 
     makeUser: async (req, res, next) => {
         foundUser = await Users.findOne({ "email": req.body.email });

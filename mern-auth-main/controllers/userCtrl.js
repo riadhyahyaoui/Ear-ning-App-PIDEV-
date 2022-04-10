@@ -3,19 +3,7 @@ const mongoose = require("mongoose");
 
 const userCtrl = {
 
-    getAllUser: async (req, res) => {
-        await User.find()
-            .then(data => {
-                res.send({ users: data });
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving users."
-                });
-            });
-    },
-
+   
     follow: async (req, res, next) => {
         let x = mongoose.Types.ObjectId(req.params.follwingid);
         User.findByIdAndUpdate(req.params.followId, { $push: { following: x } }, { new: true },

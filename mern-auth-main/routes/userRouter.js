@@ -11,5 +11,4 @@ router.delete("/deleteUser/:id",userCtrl.desactivate);
 router.get("/getFollowers/:id", userCtrl.getFollowers);
 router.get("/getFollowing/:id", userCtrl.getFollowing);
 
-router.get("/getAllUser", userCtrl.getAllUser);
 module.exports = router;

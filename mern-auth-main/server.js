@@ -21,6 +21,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/auth', require('./routes/authRouter'));
 app.use('/api/user', require('./routes/userRouter'));
 app.use('/api/admin', require('./routes/authAdminRouter'));
+app.use('/api/reclamation', require('./routes/reclamation/reclamationRouter'));
+app.use('/api/reclamationAdmin', require('./routes/reclamation/reclamationAdminRouter'));
 
 var configDB = require('./database/mongodb.json');
 
