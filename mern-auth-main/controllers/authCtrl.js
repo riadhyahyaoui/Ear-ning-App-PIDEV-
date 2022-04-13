@@ -60,7 +60,6 @@ const authCtrl = {
         role: 'user',
         method: 'local',
         mobile,
-        gender,
         address,
         Isactive: false,
         secretToken: st

@@ -7,7 +7,7 @@ const object ={
 const reclamationSchema = mongoose.Schema({
     object: {type: String,default:"RECLAMATION !!"}, 
     idUserSource: { type: String,require:true},
-    idUserDestination: {type:String},
+    idUserDestination: {type:String,ref: "user"},
     type :{type:String,enum:object,default:object.APP,required: true},
     content: {type:String,required:true},
     dateEnvoi: {type:Date,default:Date.now()},
